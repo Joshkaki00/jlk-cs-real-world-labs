@@ -2,7 +2,18 @@
 
 Hands-on lab companion to *JLK's CS: The Real World Edition*, a curriculum bridging academic CS theory and real-world software engineering. (The curriculum itself lives in a private repo, so it isn't linked from here.)
 
-This repo is **scaffolding only** — the Phase/Module directory tree exists and mirrors the curriculum 1:1, but individual labs have not been written yet. Each module directory contains a template (`README.md` + empty `starter/` and `solution/` folders) ready to be filled in.
+This repo is mostly **scaffolding** — the Phase/Module directory tree exists and mirrors the curriculum 1:1, but only one lab has actually been written so far (see Status below). Every other module directory contains a template (`README.md` + empty `starter/` and `solution/` folders) ready to be filled in.
+
+## Tooling
+
+Labs are built with [SceneryStack](https://scenerystack.org/) (TypeScript,
+Scenery/Bamboo for rendering and charts) and Vite. Each lab that has real
+code is its own small app under its module's `starter/` and `solution/`
+folders (own `package.json`, own `npm install`). Linting is shared at the
+repo root — `npm install && npm run lint` from the repo root runs
+[eslint-config-flat-airbnb](https://www.npmjs.com/package/eslint-config-flat-airbnb)
+(Airbnb's style guide, ESLint 9 flat config, TypeScript-aware) across every
+lab in one pass.
 
 ## Design Principles
 
@@ -47,4 +58,6 @@ Not every module maps naturally to a coding lab — some (e.g. workplace conduct
 
 ## Status
 
-Not yet started. Scaffolding only — no lab content has been written. See each module's `README.md` for the template to fill in.
+One pilot lab is live: [Module 3: Algorithms & Physical Constraints](phase-1-foundations-real-world-big-o/module-3-algorithms-physical-constraints/README.md) — a SceneryStack predict-then-reveal chart pairing two "equal" O(N) algorithms with very different real dollar costs at scale. It's the flagship test of the SceneryStack + Airbnb-lint tooling before deciding whether to build out the rest.
+
+Every other module is still scaffolding only — no lab content has been written. See each module's `README.md` for the template to fill in.

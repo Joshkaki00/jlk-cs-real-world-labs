@@ -1,0 +1,16 @@
+{
+  "name": "jlk-cs-real-world-labs",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Shared lint/TS tooling for the JLK's CS: The Real World Edition labs. Each module's starter/ and solution/ is its own small app; this root only holds cross-repo dev tooling.",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "eslint": "^9.36.0",
+    "eslint-config-flat-airbnb": "^0.4.0",
+    "typescript": "^5.9.2"
+  }
+}

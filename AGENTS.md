@@ -12,6 +12,7 @@ Hands-on lab companion to the `jlk-cs-real-world` curriculum (a separate, privat
     - `starter/` — boilerplate/config the learner starts from. Currently empty.
     - `solution/` — reference solution to compare against. Currently empty.
 - `scripts/scaffold.py` — regenerates the `phase-N-slug/module-M-slug/` tree from the main repo's manifest. Re-run this (don't hand-create directories) if the main curriculum adds, renames, or reorders phases/modules. **Warning: it overwrites every `README.md` it generates** (phase READMEs and module lab READMEs), so don't re-run it after a module's lab content has actually been written, or you'll wipe that work back to the placeholder template. If the curriculum changes after labs exist, add new phases/modules by hand instead of re-running wholesale.
+- `package.json` / `tsconfig.base.json` / `eslint.config.mjs` — root-level shared dev tooling (Airbnb flat-config ESLint + shared TS compiler options for labs to `extends`). Not a workspace — don't add `scenerystack`/`vite` here; those go in each lab's own `package.json`.
 
 ## Editing labs
 
@@ -22,7 +23,9 @@ Hands-on lab companion to the `jlk-cs-real-world` curriculum (a separate, privat
 
 ## Status
 
-Scaffolding phase. No lab content has been written yet — every module directory is still the placeholder template from `scripts/scaffold.py`. Don't describe any lab here as "done" or "ready" until its `README.md`, `starter/`, and `solution/` have real content, not `TODO`s.
+Mostly scaffolding, with one pilot lab live: `phase-1-foundations-real-world-big-o/module-3-algorithms-physical-constraints/` (SceneryStack + TypeScript, built with `npm create vite`-style tooling, linted with the root `eslint-config-flat-airbnb` config). Every other module directory is still the placeholder template from `scripts/scaffold.py`. Don't describe any lab here as "done" or "ready" until its `README.md`, `starter/`, and `solution/` have real content, not `TODO`s.
+
+Root-level `package.json` / `tsconfig.base.json` / `eslint.config.mjs` are shared dev tooling only (not a workspace) — each lab with real code owns its own `package.json` and installs its own dependencies (`scenerystack`, `vite`, `typescript`) under its `starter/`/`solution/` folder. Run `npm run lint` from the repo root to lint every lab in one pass.
 
 ## Git workflow
 
