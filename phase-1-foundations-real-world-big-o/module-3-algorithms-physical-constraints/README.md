@@ -2,83 +2,93 @@
 
 _Companion lab for "Module 3: Algorithms & Physical Constraints" in the curriculum (private repo, not linked here)._
 
-**Status: written.** This lab covers Step B of curriculum section 3.1 ("The
-'Drop the Constants' Lie"): once a learner has the correct mental model that
-Big-O deliberately ignores constants, this lab shows why that's a dangerous
-assumption to carry unexamined into a job.
+**Status: written.** This lab covers the full arc of curriculum section
+3.1 ("The 'Drop the Constants' Lie") plus 3.2 ("Hidden Complexity") as one
+three-stage, predict-then-reveal experience: constants don't change Big-O
+(Stage A), equal Big-O can still mean a very different bill (Stage B), and a
+loop that looks linear can hide a quadratic cost (Stage C).
+
+A guide character — using the lab author's own avatar in place of a generic
+mascot — narrates each stage in a speech bubble, mirroring the predict/reveal
+pattern used throughout the curriculum.
 
 ## Scenario
 
-Your team is choosing between two implementations of the same feature — a
-per-row transform that runs over every record in a nightly batch job. Both
-implementations are O(N). A teammate says "it doesn't matter which one we
-ship, they're the same Big-O." Your job is to find out whether that's true
-once the job runs against a real, million-row table — and to be able to
-explain the answer in dollars, not just complexity class, before your team
-picks one.
+You're pairing with a guide through three back-to-back checks on the same
+underlying idea: **Big-O describes shape, not cost.**
+
+- **Stage A — Constant factors.** Drag a slider that multiplies N by a
+  bigger and bigger constant. The line gets steeper, but it never stops
+  being a straight line. You explain, in your own words, why that's still
+  O(N).
+- **Stage B — The real bill.** Two O(N) scans — a "Lean Scan" that does a
+  simple comparison per row, and a "Service Scan" that calls out to a
+  network service per row. Predict which one costs more to run at scale,
+  then reveal animated runtime meters and the actual extra bill.
+- **Stage C — Hidden complexity.** A loop that builds a report by
+  concatenating a string on every iteration looks linear at a glance. You
+  count what each `+` really costs and pick the loop's true growth rate.
 
 ## Pre-Lab Question
 
-Before opening the lab: **Algorithm A** and **Algorithm B** below are both
-O(N). Algorithm B does one extra thing per iteration — a lookup call — that
-doesn't change its Big-O classification at all.
+Before opening the lab, look at this loop:
 
-```
-// Algorithm A
-for (let i = 0; i < n; i++) {
-  sum += arr[i];
-}
-
-// Algorithm B
-for (let i = 0; i < n; i++) {
-  sum += lookup(arr[i]);
+```js
+let report = "";
+for (const item of items) {
+  report = report + item;
 }
 ```
 
-Predict: at 1,000,000 iterations, which one actually costs more to run, and
-roughly how much more? Write your answer down before starting — you'll check
-it against the lab's reveal.
+It has one loop, so it looks like O(N). Write down your own guess for its
+real growth rate, and *why*, before you open Stage C and check it.
 
 ## Golden Path
 
-1. Open the lab (`starter/`, see below) and read the two algorithm cards.
-   Confirm for yourself that both are O(N) — same shape, same growth class.
-2. Select your prediction (Algorithm A or Algorithm B) using the radio
-   cards. This mirrors the Pre-Lab Question — you're committing to an answer
-   before you see the chart.
-3. Click **Reveal**. Nothing will happen yet — that's expected. Open
-   `src/model/AlgorithmCostModel.ts` and find the `TODO` on
-   `COST_PER_OPERATION.B`. Fill in a real per-operation dollar constant such
-   that Algorithm B costs about $50 more than Algorithm A at
-   N = 1,000,000 operations (Algorithm A is already fixed at $0.20 for that
-   N — the hint in the code comment walks you through the arithmetic).
-4. Save, reload, select a prediction again, and click **Reveal**. Checkpoint:
-   you should see two lines diverge on the chart — Algorithm A staying flat
-   near $0, Algorithm B climbing to roughly $50 — and a feedback line below
-   the chart stating the exact dollar figures and whether your prediction
-   was correct.
-5. Compare your implementation against [`solution/`](solution/). The
-   difference should be exactly the one constant in
-   `AlgorithmCostModel.ts` — everything else (the model/view split, the
-   Bamboo chart setup, the predict-then-reveal interaction) is provided as
-   the "starter, not blank page" scaffolding.
+1. Open the lab (`starter/`, see below). Stage A loads first.
+2. **Stage A:** drag the "Constant multiplier" slider and watch the coral
+   line get steeper without ever curving. Write a sentence or two in the
+   answer box explaining why both lines are still O(N), then click **Check
+   my explanation**. (Mentioning growth rate *and* constant factors is what
+   the checker looks for.)
+3. **Stage B:** read the "Lean Scan" and "Service Scan" cards — both are
+   O(N). Predict which one actually costs more, then click **Reveal the
+   runtime**. Checkpoint: two meters animate to very different lengths, and
+   a `$50` extra bill appears for the Service Scan. If your prediction was
+   "Service Scan," the lesson advances automatically; otherwise, try again.
+4. **Stage C:** look at the highlighted `report = report + item;` line.
+   Each `+` copies everything built so far — 1 copy, then 2, then 3, up to N
+   copies. Pick the growth rate that triangular sum implies, then click
+   **Check my answer**. Open `src/view/StageCView.ts` and find the `TODO`
+   on the `CORRECT_ANSWER` constant — it's deliberately set wrong in the
+   starter. Fix it to the choice you just reasoned your way to.
+5. Save, reload, and re-run Stage C. Checkpoint: picking O(N²) now advances
+   to the finish screen, with all three progress-tracker checks green.
+6. Compare your fix against [`solution/`](solution/). The difference should
+   be exactly the one constant in `StageCView.ts` — everything else (the
+   model/view split, the Bamboo chart, the guide character, the
+   predict-then-reveal mechanics for all three stages) is provided as the
+   "starter, not blank page" scaffolding.
 
 ## Why this is the lesson, not a trick
 
-Both functions really are O(N). Big-O was never designed to capture the
-constant — that's correct, standard theory, not a lie to debunk. The lab
-isn't showing you that Big-O is wrong; it's showing you what Big-O
-deliberately leaves out, and why that gap is exactly where a real invoice
-lives. See curriculum section 3.2 ("Hidden Complexity") for the related but
-distinct failure mode: an accidentally-quadratic method hiding inside a
-utility library, where the *shape* itself is wrong, not just the constant.
+Every function in this lab really is what it claims to be under Big-O: the
+two lines in Stage A are both O(N), the two scans in Stage B are both O(N),
+and the loop in Stage C is the one place where the *shape itself* is wrong —
+a naive reading says O(N), but the string-copying cost hiding inside `+`
+makes it O(N²). The lab isn't showing you that Big-O is wrong; it's showing
+you two different ways the gap between "correct asymptotic class" and "what
+you'll actually pay for" opens up: a dropped constant (still O(N), just a
+different bill) and an accidentally-quadratic method hiding inside ordinary
+code (not O(N) at all, once you count correctly).
 
 ## Starter
 
 See [`starter/`](starter/) — a working SceneryStack + TypeScript app (Vite
-bundler) with the chart, radio-card prediction UI, and reveal/reset buttons
-already wired up. The one thing left for you to fill in is the cost
-constant described in the Golden Path above.
+bundler) with all three stages, the guide character, the Bamboo chart, and
+the predict-then-reveal mechanics already wired up. The one thing left for
+you to fill in is the `CORRECT_ANSWER` constant described in the Golden Path
+above.
 
 Run it locally:
 
